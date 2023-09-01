@@ -10,58 +10,53 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.ModelLogin;
 
-@WebServlet("/ServletLogin")
+@WebServlet(urlPatterns = {"/principal/ServletLogin", "/ServletLogin"})
 public class ServletLogin extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public ServletLogin() {
+    public ServletLogin() {
 
-	}
+    }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-		doPost(request, response);
+        doPost(request, response);
+    }
 
-	}
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+        String login = request.getParameter("login");
+        String senha = request.getParameter("senha");
+        String url = request.getParameter("url");
 
-		String login = request.getParameter("login");
-		String senha = request.getParameter("senha");
+        if (login != null && !login.isEmpty() && senha != null && !senha.isEmpty()) {
 
-		if (login != null && !login.isEmpty() && senha != null && !senha.isEmpty()) {
+            ModelLogin modelLogin = new ModelLogin();
+            modelLogin.setLogin(login);
+            modelLogin.setSenha(senha);
 
-			ModelLogin modelLogin = new ModelLogin();
-			modelLogin.setLogin(login);
-			modelLogin.setSenha(senha);
+            if (modelLogin.getLogin().equalsIgnoreCase("admin") && modelLogin.getSenha().equalsIgnoreCase("admin")) {
+                request.getSession().setAttribute("usuario", modelLogin.getLogin());
 
-			if (modelLogin.getLogin().equalsIgnoreCase("admin") && modelLogin.getSenha().equalsIgnoreCase("admin")) {
-				
-				request.getSession().setAttribute("usuario", modelLogin.getLogin());
-				
-				RequestDispatcher redirecionar = request.getRequestDispatcher("principal/principal.jsp");
-				
-				redirecionar.forward(request, response);
-				
+                if (url == null || url.equals("null")) {
+                    url = "principal/principal.jsp";
+                }
 
-			} else {
+                RequestDispatcher redirecionar = request.getRequestDispatcher(url);
+                redirecionar.forward(request, response);
 
-				RequestDispatcher redirecionar = request.getRequestDispatcher("index.jsp");
-				request.setAttribute("msg", "Informe o login e senha corretamente");
-				redirecionar.forward(request, response);
+            } else {
+                RequestDispatcher redirecionar = request.getRequestDispatcher("/index.jsp");
+                request.setAttribute("msg", "Informe o login e senha corretamente");
+                redirecionar.forward(request, response);
+            }
 
-			}
-
-		} else {
-
-			RequestDispatcher redirecionar = request.getRequestDispatcher("index.jsp");
-			request.setAttribute("msg", "Informe o login e senha corretamente");
-			redirecionar.forward(request, response);
-
-		}
-
-	}
-
+        } else {
+            RequestDispatcher redirecionar = request.getRequestDispatcher("index.jsp");
+            request.setAttribute("msg", "Informe o login e senha corretamente");
+            redirecionar.forward(request, response);
+        }
+    }
 }
