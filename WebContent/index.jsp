@@ -55,7 +55,7 @@
 
 <h5>Bem-vindo ao curso de JSP</h5>
 
-<form action="ServletLogin" method="post" class="row g-3">
+<form action="<%=request.getContextPath() %>/ServletLogin" method="post" class="row g-3">
 <input type="hidden" value="<%=request.getParameter("url") %>" name="url">
 
    	 <div class="col-md-6">
